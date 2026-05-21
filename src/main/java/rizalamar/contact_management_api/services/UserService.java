@@ -9,6 +9,7 @@ import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.exception.ApiException;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
 import rizalamar.contact_management_api.repositories.UserRepository;
+import rizalamar.contact_management_api.utils.PasswordUtil;
 
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class UserService {
     private UserRepository userRepository;
     private Validator validator;
 
-    public void create (RegisterUserRequest request){
+    public void register (RegisterUserRequest request){
         Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
         if(!constraintViolations.isEmpty()){
             throw new ConstraintViolationException(constraintViolations);
@@ -30,7 +31,7 @@ public class UserService {
 
         User user = User.builder()
                 .username(request.getUsername())
-                .password(request.getPassword())
+                .password(PasswordUtil.hashPassword(request.getPassword()))
                 .name(request.getName())
                 .build();
 
