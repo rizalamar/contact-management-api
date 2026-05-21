@@ -1,4 +1,4 @@
-package rizalamar.contact_management_api.model;
+package rizalamar.contact_management_api.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
