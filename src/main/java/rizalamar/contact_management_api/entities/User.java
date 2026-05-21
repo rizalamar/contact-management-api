@@ -15,16 +15,16 @@ import java.util.List;
 public class User {
 
     @Id
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String username;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 15, unique = true)
+    @Column(length = 100, unique = true)
     private String token;
 
     @Column(name = "token_expired_at")
