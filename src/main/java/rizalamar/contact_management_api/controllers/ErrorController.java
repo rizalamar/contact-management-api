@@ -1,6 +1,6 @@
 package rizalamar.contact_management_api.controllers;
 
-import org.hibernate.exception.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
