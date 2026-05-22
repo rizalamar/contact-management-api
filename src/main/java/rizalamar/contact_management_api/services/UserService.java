@@ -4,9 +4,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
-import rizalamar.contact_management_api.exception.ApiException;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
@@ -16,17 +17,18 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
-    private Validator validator;
+    private final UserRepository userRepository;
+    private final Validator validator;
 
     public void register (RegisterUserRequest request){
         Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
+        System.out.println("constraintViolations: " + constraintViolations);
         if(!constraintViolations.isEmpty()){
             throw new ConstraintViolationException(constraintViolations);
         }
 
         if(userRepository.existsById(request.getUsername())){
-            throw new ApiException("Username already registered");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
         }
 
         User user = User.builder()
@@ -37,5 +39,4 @@ public class UserService {
 
         userRepository.save(user);
     }
-
 }
