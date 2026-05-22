@@ -18,14 +18,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final Validator validator;
+    private final ValidationService validationService;
 
     public void register (RegisterUserRequest request){
-        Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
-        System.out.println("constraintViolations: " + constraintViolations);
-        if(!constraintViolations.isEmpty()){
-            throw new ConstraintViolationException(constraintViolations);
-        }
+        validationService.validate(request);
 
         if(userRepository.existsById(request.getUsername())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
