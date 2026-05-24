@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
 import rizalamar.contact_management_api.models.UserResponse;
+import rizalamar.contact_management_api.models.WebResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
 
