@@ -25,8 +25,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/logout")
-    public WebResponse<String> logout(@RequestHeader(name = "X-API-TOKEN") String token) {
-        User user = userRepository.findFirstByToken(token).orElseThrow(() -> new  ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
+    public WebResponse<String> logout(User user) {
         authService.logout(user);
         return WebResponse.<String>builder().data("OK").build();
     }
