@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
+import rizalamar.contact_management_api.models.UpdateUserRequest;
 import rizalamar.contact_management_api.models.UserResponse;
 import rizalamar.contact_management_api.models.WebResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -36,6 +38,25 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    public UserResponse update(User user, UpdateUserRequest request){
+        validationService.validate(request);
+
+        if (Objects.nonNull(request.getName())){
+            user.setName(request.getName());
+        }
+
+        if(Objects.nonNull(request.getPassword())) {
+            user.setPassword(PasswordUtil.hashPassword(request.getPassword()));
+        }
+
+        userRepository.save(user);
+
+        return UserResponse.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .build();
     }
 
     public UserResponse get(User user) {

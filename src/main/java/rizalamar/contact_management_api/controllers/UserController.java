@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
+import rizalamar.contact_management_api.models.UpdateUserRequest;
 import rizalamar.contact_management_api.models.UserResponse;
 import rizalamar.contact_management_api.models.WebResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
@@ -16,7 +17,6 @@ import rizalamar.contact_management_api.services.UserService;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @PostMapping
     public WebResponse<String> register (@RequestBody RegisterUserRequest request){
@@ -28,6 +28,11 @@ public class UserController {
     public WebResponse<UserResponse> get(User user) {
         UserResponse userResponse = userService.get(user);
         return  WebResponse.<UserResponse>builder().data(userResponse).build();
+    }
 
+    @PatchMapping("/current")
+    public WebResponse<UserResponse> update(User user,@RequestBody UpdateUserRequest request){
+        UserResponse updateResponse = userService.update(user, request);
+        return WebResponse.<UserResponse>builder().data(updateResponse).build();
     }
 }
