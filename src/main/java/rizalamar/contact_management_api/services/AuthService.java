@@ -40,13 +40,10 @@ public class AuthService {
         }
     }
 
-    public WebResponse<String> logout (String token){
-        User user = userRepository.findFirstByToken(token).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    public void logout (User user){
         user.setToken(null);
         user.setTokenExpiredAt(null);
         userRepository.save(user);
-
-        return WebResponse.<String>builder().data("OK").build();
     }
 
     public Long next30Days(){
