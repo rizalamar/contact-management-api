@@ -117,4 +117,63 @@ class UserControllerTest {
 //                });
                 .andExpectAll(jsonPath("$.errors").value("Username already registered"));
     }
+
+
+
+    @Test
+    void testGetUserSuccess() throws Exception {
+        // - mensimulasikan ada data user di database yang SUDAH LOGIN (punya token)
+        User user = new User();
+        user.setName("Test");
+        user.setUsername("test");
+        user.setPassword("rahasia");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 10000000000L);
+        userRepository.save(user);
+
+        mockMvc.perform(
+                get("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token") // <-- mengirim token
+        )
+                .andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data.username").isNotEmpty())
+                .andExpectAll(jsonPath("$.data.name").isNotEmpty())
+                .andExpectAll(jsonPath("$.errors").isEmpty());
+
+
+    }
+
+    @Test
+    void testGetUserTokenNotFound() throws  Exception{
+        mockMvc.perform(
+                get("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "token-salah")
+        )
+                .andExpectAll(status().isUnauthorized())
+                .andExpectAll(jsonPath("$.errors").value("Unauthorized"));
+    }
+
+    @Test
+    void testGetUserTokenExpired() throws Exception{
+        User user = new User();
+        user.setName("Test");
+        user.setUsername("test");
+        user.setPassword("rahasia");
+        user.setToken("test-basi");
+        user.setTokenExpiredAt(System.currentTimeMillis() - 1000); // <-- lewat 1 detik
+        userRepository.save(user);
+
+        mockMvc.perform(
+                get("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "token-basi")
+        )
+                .andExpectAll(status().isUnauthorized())
+                .andExpectAll(jsonPath("$.errors").isNotEmpty());
+    }
+
 }
