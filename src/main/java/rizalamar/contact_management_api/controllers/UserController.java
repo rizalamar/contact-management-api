@@ -25,16 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public WebResponse<UserResponse> get(@RequestHeader(name = "X-API-TOKEN") String token) {
-        User user = userRepository.findFirstByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
-
-        long expiredBase = System.currentTimeMillis();
-        long userExpired = user.getTokenExpiredAt();
-        if (expiredBase > userExpired) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
-        }
-
+    public WebResponse<UserResponse> get(User user) {
         UserResponse userResponse = userService.get(user);
         return  WebResponse.<UserResponse>builder().data(userResponse).build();
 
