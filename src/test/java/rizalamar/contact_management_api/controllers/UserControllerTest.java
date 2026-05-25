@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.RegisterUserRequest;
+import rizalamar.contact_management_api.models.UpdateUserRequest;
 import rizalamar.contact_management_api.models.WebResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
 
@@ -175,6 +176,146 @@ class UserControllerTest {
                         .header("X-API-TOKEN", "token-basi")
         )
                 .andExpectAll(status().isUnauthorized())
+                .andExpectAll(jsonPath("$.errors").isNotEmpty());
+    }
+
+    @Test
+    void testUpdateUserSuccess() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setName("Test");
+        user.setPassword("rahasia");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("rizal");
+        request.setPassword("rizalamar123");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(
+                patch("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+                        .content(requestJson)
+        ).andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data.name").value("rizal"))
+                .andExpectAll(jsonPath("$.data.username").value("test"))
+                .andExpectAll(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    void testUpdateUserNameOnlySuccess() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setName("Test");
+        user.setPassword("rahasiaya");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("Rizal");
+        request.setPassword("rahasiaya");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(
+                patch("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+                        .content(requestJson)
+        )
+                .andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data.name").value("Rizal"))
+                .andExpectAll(jsonPath("$.data.username").value("test"))
+                .andExpectAll(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    void testUpdateUserPasswordOnlySuccess() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setName("Test");
+        user.setPassword("rahasiaya");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("Test");
+        request.setPassword("rahasiaya123");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(
+                        patch("/api/users/current")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test-token")
+                                .content(requestJson)
+                )
+                .andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data.name").value("Test"))
+                .andExpectAll(jsonPath("$.data.username").value("test"))
+                .andExpectAll(jsonPath("$.errors").isEmpty());
+    }
+
+    @Test
+    void testUpdateUserInvalidToken() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setName("Test");
+        user.setPassword("rahasiaya");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("Rizal");
+        request.setPassword("rahasiaya");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(
+                        patch("/api/users/current")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test-salah")
+                                .content(requestJson)
+                )
+                .andExpectAll(status().isUnauthorized())
+                .andExpectAll(jsonPath("$.errors").value("Unauthorized"));
+    }
+
+    @Test
+    void testUpdateUserPasswordInvalid() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setName("Test");
+        user.setPassword("rahasiaya");
+        user.setToken("test-token");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("Rizal");
+        request.setPassword("rahasia");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(
+                        patch("/api/users/current")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test-token")
+                                .content(requestJson)
+                )
+                .andExpectAll(status().isBadRequest())
                 .andExpectAll(jsonPath("$.errors").isNotEmpty());
     }
 

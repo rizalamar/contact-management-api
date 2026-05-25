@@ -14,6 +14,6 @@ public class UpdateUserRequest {
     @Size(max = 100)
     private String name;
 
-    @Size(min = 8, max = 100)
+    @Size(min = 8, max = 100, message = "Password must between in 8 and 100 characters")
     private String password;
 }
