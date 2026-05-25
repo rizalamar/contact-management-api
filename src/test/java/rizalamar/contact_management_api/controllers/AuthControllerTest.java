@@ -9,12 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import rizalamar.contact_management_api.entities.User;
-import rizalamar.contact_management_api.models.LoginUserRequest;
+import rizalamar.contact_management_api.models.user.LoginUserRequest;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;

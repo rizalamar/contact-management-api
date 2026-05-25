@@ -1,6 +1,5 @@
 package rizalamar.contact_management_api.controllers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,16 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import rizalamar.contact_management_api.entities.User;
-import rizalamar.contact_management_api.models.RegisterUserRequest;
-import rizalamar.contact_management_api.models.UpdateUserRequest;
-import rizalamar.contact_management_api.models.WebResponse;
+import rizalamar.contact_management_api.models.user.RegisterUserRequest;
+import rizalamar.contact_management_api.models.user.UpdateUserRequest;
 import rizalamar.contact_management_api.repositories.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -1,15 +1,12 @@
 package rizalamar.contact_management_api.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
-import rizalamar.contact_management_api.models.RegisterUserRequest;
-import rizalamar.contact_management_api.models.UpdateUserRequest;
-import rizalamar.contact_management_api.models.UserResponse;
+import rizalamar.contact_management_api.models.user.RegisterUserRequest;
+import rizalamar.contact_management_api.models.user.UpdateUserRequest;
+import rizalamar.contact_management_api.models.user.UserResponse;
 import rizalamar.contact_management_api.models.WebResponse;
-import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.services.UserService;
 
 @RestController

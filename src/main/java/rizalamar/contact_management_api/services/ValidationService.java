@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rizalamar.contact_management_api.models.RegisterUserRequest;
 
 import java.util.Set;
 

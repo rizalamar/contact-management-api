@@ -1,4 +1,4 @@
-package rizalamar.contact_management_api.models;
+package rizalamar.contact_management_api.models.user;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -1,22 +1,17 @@
 package rizalamar.contact_management_api.services;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rizalamar.contact_management_api.entities.User;
-import rizalamar.contact_management_api.models.RegisterUserRequest;
-import rizalamar.contact_management_api.models.UpdateUserRequest;
-import rizalamar.contact_management_api.models.UserResponse;
-import rizalamar.contact_management_api.models.WebResponse;
+import rizalamar.contact_management_api.models.user.RegisterUserRequest;
+import rizalamar.contact_management_api.models.user.UpdateUserRequest;
+import rizalamar.contact_management_api.models.user.UserResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
