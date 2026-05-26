@@ -9,10 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import rizalamar.contact_management_api.entities.Contact;
 import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.contact.CreateContactRequest;
 import rizalamar.contact_management_api.repositories.ContactRepository;
 import rizalamar.contact_management_api.repositories.UserRepository;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -91,5 +94,43 @@ class ContactControllerTest {
         )
                 .andExpectAll(status().isBadRequest())
                 .andExpectAll(jsonPath("$.errors").isNotEmpty());
+    }
+
+    @Test
+    void getContactSuccess() throws Exception {
+        User user = userRepository.findById("test").orElseThrow();
+        Contact contact = new Contact();
+        contact.setId(UUID.randomUUID().toString());
+        contact.setFirstName("Rizal");
+        contact.setLastName("Amarulloh");
+        contact.setEmail("rizal@mail.com");
+        contact.setPhone("08123456789");
+        contact.setUser(user);
+        contactRepository.save(contact);
+
+        mockMvc.perform(
+                get("/api/contacts/" + contact.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+        )
+                .andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data.id").value(contact.getId()))
+                .andExpectAll(jsonPath("$.data.firstName").value(contact.getFirstName()))
+                .andExpectAll(jsonPath("$.data.lastName").value(contact.getLastName()))
+                .andExpectAll(jsonPath("$.data.email").value(contact.getEmail()))
+                .andExpectAll(jsonPath("$.data.phone").value(contact.getPhone()));
+    }
+
+    @Test
+    void getContactNotFound() throws Exception {
+        mockMvc.perform(
+                get("/api/contacts/salah")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+        )
+                .andExpectAll(status().isNotFound())
+                .andExpectAll(jsonPath("$.errors").exists());
     }
 }
