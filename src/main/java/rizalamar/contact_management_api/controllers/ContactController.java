@@ -8,6 +8,7 @@ import rizalamar.contact_management_api.entities.User;
 import rizalamar.contact_management_api.models.WebResponse;
 import rizalamar.contact_management_api.models.contact.ContactResponse;
 import rizalamar.contact_management_api.models.contact.CreateContactRequest;
+import rizalamar.contact_management_api.models.contact.UpdateContactRequest;
 import rizalamar.contact_management_api.services.ContactService;
 
 @RestController
@@ -25,6 +26,13 @@ public class ContactController {
     @GetMapping(path = "/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public WebResponse<ContactResponse> get(User user, @PathVariable("contactId") String contactId) {
         ContactResponse contactResponse = contactService.get(user, contactId);
+        return WebResponse.<ContactResponse>builder().data(contactResponse).build();
+    }
+
+    @PutMapping(path = "/{contactId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public WebResponse<ContactResponse> update (User user, @RequestBody  UpdateContactRequest request, @PathVariable("contactId") String contactId) {
+        request.setId(contactId);
+        ContactResponse contactResponse = contactService.update(user, request);
         return WebResponse.<ContactResponse>builder().data(contactResponse).build();
     }
 }
