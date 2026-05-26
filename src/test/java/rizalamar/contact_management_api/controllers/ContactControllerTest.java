@@ -288,4 +288,39 @@ class ContactControllerTest {
                 .andExpectAll(status().isUnauthorized())
                 .andExpectAll(jsonPath("$.errors").isNotEmpty());
     }
+
+    @Test
+    void deleteContactSuccess() throws Exception {
+        User user = userRepository.findById("test").orElseThrow();
+        Contact contact = new Contact();
+        contact.setId(UUID.randomUUID().toString());
+        contact.setFirstName("Rizal");
+        contact.setLastName("Amarulloh");
+        contact.setEmail("rizal@mail.com");
+        contact.setPhone("08123456789");
+        contact.setUser(user);
+        contactRepository.save(contact);
+
+        mockMvc.perform(
+                delete("/api/contacts/" + contact.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+        )
+                .andExpectAll(status().isOk())
+                .andExpectAll(jsonPath("$.data").value("OK"));
+        // make sure contact has really deleted
+        assertFalse(contactRepository.existsById(contact.getId()));
+    }
+
+    @Test
+    void deleteContactNotFound() throws Exception {
+        mockMvc.perform(
+                delete("/api/contacts/salah-id")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN","test-token")
+        )
+                .andExpectAll(status().isNotFound())
+                .andExpectAll(jsonPath("$.errors").exists());
+    }
 }
