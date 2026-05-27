@@ -323,4 +323,94 @@ class ContactControllerTest {
                 .andExpectAll(status().isNotFound())
                 .andExpectAll(jsonPath("$.errors").exists());
     }
+
+    @Test
+    void searchNotFound() throws Exception {
+        mockMvc.perform(
+                get("/api/contacts")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+        )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.data").isEmpty(),
+                        jsonPath("$.paging.currentPage").value(0),
+                        jsonPath("$.paging.totalPages").value(0),
+                        jsonPath("$.paging.size").value(10)
+                );
+    }
+
+    @Test
+    void searchSuccess() throws Exception {
+        User user = userRepository.findById("test").orElseThrow();
+        for(int i = 0; i < 10; i++){
+            Contact contact = new Contact();
+            contact.setId(UUID.randomUUID().toString());
+            contact.setFirstName("Rizal " + i);
+            contact.setLastName("Amarulloh");
+            contact.setEmail("rizal" + i + "@mail.com");
+            contact.setPhone("0812345678" + i);
+            contact.setUser(user);
+            contactRepository.save(contact);
+        }
+
+        // name based
+        mockMvc.perform(
+                get("/api/contacts")
+                        .queryParam("name", "Rizal")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test-token")
+        )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.data.length()").value(10),
+                        jsonPath("$.paging.currentPage").value(0),
+                        jsonPath("$.paging.totalPages").value(1),
+                        jsonPath("$.paging.size").value(10)
+                );
+
+        // email based
+        mockMvc.perform(
+                        get("/api/contacts")
+                                .queryParam("email", "@mail.com")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test-token")
+                )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.data.length()").value(10)
+                );
+    }
+
+    @Test
+    void searchUsingPaging() throws Exception {
+        User user = userRepository.findById("test").orElseThrow();
+        for(int i = 0; i < 10; i++){
+            Contact contact = new Contact();
+            contact.setId(UUID.randomUUID().toString());
+            contact.setFirstName("Rizal " + i);
+            contact.setLastName("Amarulloh");
+            contact.setEmail("rizal" + i + "@mail.com");
+            contact.setPhone("0812345678" + i);
+            contact.setUser(user);
+            contactRepository.save(contact);
+        }
+
+        // name based
+        mockMvc.perform(
+                        get("/api/contacts")
+                                .queryParam("page", "1")
+                                .queryParam("size", "5")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .header("X-API-TOKEN", "test-token")
+                )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.data.length()").value(5),
+                        jsonPath("$.paging.currentPage").value(1),
+                        jsonPath("$.paging.totalPages").value(2),
+                        jsonPath("$.paging.size").value(5)
+                );
+    }
 }
