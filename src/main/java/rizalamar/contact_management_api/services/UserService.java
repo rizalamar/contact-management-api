@@ -11,13 +11,16 @@ import rizalamar.contact_management_api.models.user.UserResponse;
 import rizalamar.contact_management_api.repositories.UserRepository;
 import rizalamar.contact_management_api.utils.PasswordUtil;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final ValidationService validationService;
+    private final ContactService contactService;
 
     public void register (RegisterUserRequest request){
         validationService.validate(request);
@@ -58,6 +61,9 @@ public class UserService {
         return UserResponse.builder()
                 .username(user.getUsername())
                 .name(user.getName())
+                .contacts(Objects.nonNull(user.getContacts()) ? user.getContacts().stream()
+                        .map(contactService::toContactResponse)
+                        .collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 }

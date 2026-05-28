@@ -55,6 +55,7 @@ public class AddressController {
             @PathVariable("addressId") String addressId,
             @RequestBody UpdateAddressRequest request
             ) {
+        request.setId(addressId);
         Contact contact = contactService.findContactEntityByUserAndId(user, contactId);
         AddressResponse addressResponse = addressService.update(contact, request);
         return WebResponse.<AddressResponse>builder().data(addressResponse).build();

@@ -90,7 +90,7 @@ public class AddressService {
         return toAddressResponse(address);
     }
 
-    private AddressResponse toAddressResponse(Address address) {
+    public AddressResponse toAddressResponse(Address address) {
         return AddressResponse.builder()
                 .id(address.getId())
                 .street(address.getStreet())

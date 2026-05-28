@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class ContactService {
     private final ValidationService validationService;
     private final ContactRepository contactRepository;
+    private final AddressService addressService;
 
     public ContactResponse create (User user, CreateContactRequest request){
         validationService.validate(request);
@@ -134,13 +135,16 @@ public class ContactService {
     }
 
 
-    private ContactResponse toContactResponse(Contact contact){
+    public ContactResponse toContactResponse(Contact contact){
         return ContactResponse.builder()
                 .id(contact.getId())
                 .firstName(contact.getFirstName())
                 .lastName(contact.getLastName())
                 .email(contact.getEmail())
                 .phone(contact.getPhone())
+                .addresses(Objects.nonNull(contact.getAddresses()) ? contact.getAddresses().stream()
+                        .map(addressService::toAddressResponse)
+                        .collect(Collectors.toList()) : new ArrayList<>())
                 .build();
     }
 }

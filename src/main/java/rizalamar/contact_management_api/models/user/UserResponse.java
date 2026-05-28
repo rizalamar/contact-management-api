@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rizalamar.contact_management_api.models.contact.ContactResponse;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,4 +16,5 @@ public class UserResponse {
     private String username;
 
     private String name;
+    private List<ContactResponse> contacts;
 }
