@@ -126,6 +126,13 @@ public class ContactService {
         return new PageImpl<>(contactResponses, pageable, contacts.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
+    public Contact findContactEntityByUserAndId(User user, String id){
+        return contactRepository.findFirstByUserAndId(user, id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found")
+        );
+    }
+
 
     private ContactResponse toContactResponse(Contact contact){
         return ContactResponse.builder()
